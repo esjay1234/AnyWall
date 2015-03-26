@@ -572,7 +572,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
             }
             // Display a green marker with the post information
             markerOpts =
-                markerOpts.title(post.getText()).snippet(post.getUser().getUsername())
+                markerOpts.title(post.getText()).snippet(post.getUser().getString("additional_info"))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
           }
           // Add a new marker

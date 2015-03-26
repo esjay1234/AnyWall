@@ -11,7 +11,8 @@
 
         <LinearLayout
             style="@style/LoginFormContainer"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:weightSum="1">
 
             <EditText
                 android:id="@+id/username_edit_text"
@@ -43,6 +44,27 @@
                 android:imeActionLabel="@string/signup"
                 android:imeOptions="actionUnspecified" />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone"
+                android:hint="Phone-Number"
+                android:ems="10"
+                android:id="@+id/editphone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please write what you want others to know:"
+                android:id="@+id/textView" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Write Here"
+                android:id="@+id/otherinfo"
+                android:layout_weight="1.97" />
+
             <Button
                 android:id="@+id/action_button"
                 android:layout_width="wrap_content"
@@ -51,7 +73,8 @@
                 android:layout_marginTop="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:text="@string/signup" />
+                android:text="@string/signup"
+                android:layout_weight="0.82" />
         </LinearLayout>
     </ScrollView>
 

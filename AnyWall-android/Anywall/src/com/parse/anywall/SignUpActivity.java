@@ -24,7 +24,8 @@ public class SignUpActivity extends Activity {
   private EditText usernameEditText;
   private EditText passwordEditText;
   private EditText passwordAgainEditText;
-
+  private EditText otherInfo;
+  private EditText phonenumber;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -36,6 +37,8 @@ public class SignUpActivity extends Activity {
 
     passwordEditText = (EditText) findViewById(R.id.password_edit_text);
     passwordAgainEditText = (EditText) findViewById(R.id.password_again_edit_text);
+    otherInfo= (EditText) findViewById(R.id.otherinfo);
+    phonenumber= (EditText) findViewById(R.id.editphone);
     passwordAgainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -60,7 +63,9 @@ public class SignUpActivity extends Activity {
   private void signup() {
     String username = usernameEditText.getText().toString().trim();
     String password = passwordEditText.getText().toString().trim();
+    String info= otherInfo.getText().toString().trim();
     String passwordAgain = passwordAgainEditText.getText().toString().trim();
+    String phone=phonenumber.getText().toString().trim();
 
     // Validate the sign up data
     boolean validationError = false;
@@ -101,7 +106,8 @@ public class SignUpActivity extends Activity {
     ParseUser user = new ParseUser();
     user.setUsername(username);
     user.setPassword(password);
-
+    user.put("additional_info",info);
+    user.put("phone_number",phone);
     // Call the Parse signup method
     user.signUpInBackground(new SignUpCallback() {
       @Override

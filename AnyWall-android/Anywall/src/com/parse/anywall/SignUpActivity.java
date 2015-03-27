@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class SignUpActivity extends Activity {
   private EditText passwordAgainEditText;
   private EditText otherInfo;
   private EditText phonenumber;
+  private Spinner spin;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -39,6 +41,7 @@ public class SignUpActivity extends Activity {
     passwordAgainEditText = (EditText) findViewById(R.id.password_again_edit_text);
     otherInfo= (EditText) findViewById(R.id.otherinfo);
     phonenumber= (EditText) findViewById(R.id.editphone);
+    spin= (Spinner) findViewById(R.id.spinner);
     passwordAgainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -66,6 +69,7 @@ public class SignUpActivity extends Activity {
     String info= otherInfo.getText().toString().trim();
     String passwordAgain = passwordAgainEditText.getText().toString().trim();
     String phone=phonenumber.getText().toString().trim();
+    String type=String.valueOf(spin.getSelectedItem());
 
     // Validate the sign up data
     boolean validationError = false;
@@ -108,6 +112,7 @@ public class SignUpActivity extends Activity {
     user.setPassword(password);
     user.put("additional_info",info);
     user.put("phone_number",phone);
+    user.put("type",type);
     // Call the Parse signup method
     user.signUpInBackground(new SignUpCallback() {
       @Override

@@ -86,6 +86,8 @@ public class PostActivity extends Activity {
     post.setLocation(geoPoint);
     post.setText(text);
     post.setUser(ParseUser.getCurrentUser());
+    String abc=post.getUser().getString("type");
+    post.put("type",abc);
     ParseACL acl = new ParseACL();
 
     // Give public read access

@@ -29,6 +29,7 @@ public class SettingsActivity extends Activity {
     setContentView(R.layout.activity_settings);
 
     float currentSearchDistance = Application.getSearchDistance();
+    int currentSelected=Application.getClicked();
     if (!availableOptions.contains(currentSearchDistance)) {
       availableOptions.add(currentSearchDistance);
     }
@@ -58,6 +59,9 @@ public class SettingsActivity extends Activity {
         button.setId(i);
         button.setText(options[i]);
         searchCatRadioGroup.addView(button, i);
+        if (currentSelected == i) {
+            searchCatRadioGroup.check(i);
+        }
     }
       searchCatRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
           @Override

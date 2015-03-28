@@ -23,8 +23,7 @@ public class AnywallPost extends ParseObject {
     return getParseUser("user");
   }
 
-  public void setUser(ParseUser value) {
-    put("user", value);
+  public void setUser(ParseUser value) {put("user", value);
   }
 
   public ParseGeoPoint getLocation() {

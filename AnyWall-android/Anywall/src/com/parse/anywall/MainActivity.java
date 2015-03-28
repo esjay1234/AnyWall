@@ -84,10 +84,10 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 return "Helper";
 
             case 1:
-                return "Need Helper";
+                return "Need Help";
 
             case 2:
-                return "ALL";
+                return "Help";
 
         }
         return "";
@@ -213,9 +213,9 @@ public class MainActivity extends FragmentActivity implements LocationListener,
             query.orderByDescending("createdAt");
             query.whereWithinKilometers("location", geoPointFromLocation(myLoc), radius
                     / METERS_PER_KILOMETER);
-//            query.whereMatches(getTheSelected(clicked),"type");
+            query.whereMatches("type",getTheSelected(clicked));
             query.setLimit(MAX_POST_SEARCH_RESULTS);
-
+//              getTheSelected(clicked)
             return query;
           }
         };
@@ -562,6 +562,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     mapQuery.include("user");
     mapQuery.orderByDescending("createdAt");
     mapQuery.setLimit(MAX_POST_SEARCH_RESULTS);
+    mapQuery.whereMatches("type",getTheSelected(clicked));
     // Kick off the query in the background
     mapQuery.findInBackground(new FindCallback<AnywallPost>() {
       @Override
@@ -622,7 +623,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
               }
             }
             // Display a green marker with the post information
-            if (post.getUser().getString("type").equals("Need Helper")) {
+            if (post.getUser().getString("type").equals("Need Help")) {
                 markerOpts =
                         markerOpts.title(post.getUser().getUsername()).snippet(post.getUser().getString("additional_info"))
                                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));

@@ -19,6 +19,8 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -92,11 +94,18 @@ public class PostActivity extends Activity {
     post.put("type",abc);
     post.put("Status","posted");
     post.put("User",post.getUser());
-      Date testing = new Date();
-      testing.setHours(15);
-      testing.setMinutes(59);
-      testing.setSeconds(0);
-    post.put("timeuploaded",testing);
+      DateFormat test=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+      Date date=new Date();
+      Date next=new Date();
+      next.setTime(date.getTime()+60*15*1000);
+
+//
+//      Date testing = new Date();
+//      testing.setHours(15);
+//      testing.setMinutes(59);
+//      testing.setSeconds(0);
+    post.put("timeuploaded",date);
+    post.put("reset",next);
     ParseACL acl = new ParseACL();
 
     // Give public read access

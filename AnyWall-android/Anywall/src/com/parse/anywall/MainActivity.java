@@ -216,12 +216,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                                 / METERS_PER_KILOMETER);
                         query.whereMatches("type",getTheSelected(clicked));
                         query.setLimit(MAX_POST_SEARCH_RESULTS);
-                        Date midnight = new Date();
-                        midnight.setHours(15);
-                        midnight.setMinutes(58);
-                        midnight.setSeconds(0);
-                        query.whereGreaterThan("timeuploaded", midnight);
-//              getTheSelected(clicked)
+                        Date cur = new Date();
+                        query.whereGreaterThan("reset", cur);
                         return query;
                     }
                 };
@@ -233,8 +229,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 if (view == null) {
                     view = View.inflate(getContext(), R.layout.anywall_post_item, null);
                 }
-                TextView contentView = (TextView) view.findViewById(R.id.content_view);
-                TextView usernameView = (TextView) view.findViewById(R.id.username_view);
+                TextView contentView = (TextView) view.findViewById(R.id.username_view);
+                TextView usernameView = (TextView) view.findViewById(R.id.content_view);
                 contentView.setText(post.getText());
                 usernameView.setText(post.getUser().getUsername());
                 return view;
@@ -569,6 +565,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         mapQuery.orderByDescending("createdAt");
         mapQuery.setLimit(MAX_POST_SEARCH_RESULTS);
         mapQuery.whereMatches("type",getTheSelected(clicked));
+        Date cur = new Date();
+        mapQuery.whereGreaterThan("reset", cur);
         // Kick off the query in the background
         mapQuery.findInBackground(new FindCallback<AnywallPost>() {
             @Override
@@ -615,7 +613,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                         // Display a red marker with a predefined title and no snippet
                         markerOpts =
                                 markerOpts.title(getResources().getString(R.string.post_out_of_range)).icon(
-                                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                        BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                     }
                     else {
                         // Check for an existing in range marker
@@ -631,13 +629,12 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                         // Display a green marker with the post information
                         if (post.getUser().getString("type").equals("Need Help")) {
                             markerOpts =
-                                    markerOpts.title(post.getUser().getUsername()).snippet(post.getUser().getString("additional_info"))
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                    markerOpts.title(post.getText()).snippet(post.getUser().getString("additional_info"))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                         }
                         else {
                             markerOpts =
-                                    markerOpts.title(post.getText()).snippet(post.getUser().getString("additional_info"))
-                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                    markerOpts.title(post.getText()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                         }
                     }
 //

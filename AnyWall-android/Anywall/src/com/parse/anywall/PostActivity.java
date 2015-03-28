@@ -19,6 +19,8 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.util.Date;
+
 /**
  * Activity which displays a login screen to the user, offering registration as well.
  */
@@ -88,6 +90,13 @@ public class PostActivity extends Activity {
     post.setUser(ParseUser.getCurrentUser());
     String abc=post.getUser().getString("type");
     post.put("type",abc);
+    post.put("Status","posted");
+    post.put("User",post.getUser());
+      Date testing = new Date();
+      testing.setHours(15);
+      testing.setMinutes(59);
+      testing.setSeconds(0);
+    post.put("timeuploaded",testing);
     ParseACL acl = new ParseACL();
 
     // Give public read access

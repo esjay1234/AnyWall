@@ -231,7 +231,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 }
                 TextView contentView = (TextView) view.findViewById(R.id.username_view);
                 TextView usernameView = (TextView) view.findViewById(R.id.content_view);
-                contentView.setText(post.getText());
+                contentView.setText(post.getUser().getString("sex"));
                 usernameView.setText(post.getUser().getUsername());
                 return view;
             }

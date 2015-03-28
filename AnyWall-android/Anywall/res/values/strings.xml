@@ -17,6 +17,10 @@
     <string name="activity_post_title">Create a Post</string>
     <string name="character_count_placeholder">0/140</string>
     <string-array name="needhelper">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="sex">
         <item>Helper</item>
         <item>Need Help</item>
     </string-array>

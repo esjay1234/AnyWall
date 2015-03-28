@@ -38,4 +38,20 @@
         android:layout_alignParentEnd="true"
         android:text="@string/logout_full" />
 
+    <RadioGroup
+        android:id="@+id/searchCat_radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/show"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+    <TextView
+        android:id="@+id/show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchdistance_radiogroup"
+        android:layout_alignParentLeft="true"
+        android:text="show"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
 </RelativeLayout>

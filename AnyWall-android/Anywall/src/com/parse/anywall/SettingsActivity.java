@@ -36,7 +36,7 @@ public class SettingsActivity extends Activity {
 
     // The search distance choices
     RadioGroup searchDistanceRadioGroup = (RadioGroup) findViewById(R.id.searchdistance_radiogroup);
-
+    RadioGroup searchCatRadioGroup=(RadioGroup) findViewById(R.id.searchCat_radiogroup);
     for (int index = 0; index < availableOptions.size(); index++) {
       float searchDistance = availableOptions.get(index);
 
@@ -49,6 +49,23 @@ public class SettingsActivity extends Activity {
         searchDistanceRadioGroup.check(index);
       }
     }
+
+    String []options={"View only HELPERS","View only people who need HELP","View ALL"};
+
+
+    for (int i=0; i<3; i++) {
+        RadioButton button = new RadioButton(this);
+        button.setId(i);
+        button.setText(options[i]);
+        searchCatRadioGroup.addView(button, i);
+    }
+      searchCatRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+          @Override
+          public void onCheckedChanged(RadioGroup group, int checkedId) {
+              Application.setClicked(checkedId);
+          }
+      });
+
 
     // Set up the selection handler to save the selection to the application
     searchDistanceRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {

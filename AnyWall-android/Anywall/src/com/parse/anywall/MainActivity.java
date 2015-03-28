@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.view.ViewGroup.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -25,7 +26,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +40,7 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -56,6 +61,43 @@ import com.parse.ParseQueryAdapter;
 public class MainActivity extends FragmentActivity implements LocationListener,
     GooglePlayServicesClient.ConnectionCallbacks,
     GooglePlayServicesClient.OnConnectionFailedListener {
+
+    LinearLayout layoutOfPopup;
+    PopupWindow popupMessage;
+    TextView popupText;
+    Button insidePopupButton;
+    public void init() {
+        popupText=new TextView(this);
+        layoutOfPopup= new LinearLayout(this);
+        insidePopupButton=new Button(this);
+        insidePopupButton.setText("OK");
+        layoutOfPopup.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        popupText.setPadding(0, 0, 0, 20);
+        layoutOfPopup.setOrientation(1);
+        layoutOfPopup.addView(popupText);
+        layoutOfPopup.addView(insidePopupButton);
+    }
+
+    public String getTheSelected(int i) {
+        switch (i) {
+            case 0:
+                return "Helper";
+
+            case 1:
+                return "Need Helper";
+
+            case 2:
+                return "ALL";
+
+        }
+        return "";
+    }
+
+    public void popupInit() {
+
+        popupMessage = new PopupWindow(layoutOfPopup,LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        popupMessage.setContentView(layoutOfPopup);
+    }
 
   /*
    * Define a request code to send to Google Play services This code is returned in
@@ -104,6 +146,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
   // Maximum post search radius for map in kilometers
   private static final int MAX_POST_SEARCH_DISTANCE = 100;
 
+  private static final int TIMER_IN_SEC=60;
+
   /*
    * Other class member variables
    */
@@ -115,6 +159,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 
   // Fields for the map radius in feet
   private float radius;
+  private int clicked;
   private float lastRadius;
 
   // Fields for helping process map and location changes
@@ -138,9 +183,11 @@ public class MainActivity extends FragmentActivity implements LocationListener,
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     radius = Application.getSearchDistance();
+    clicked = Application.getClicked();
     lastRadius = radius;
     setContentView(R.layout.activity_main);
-
+    init();
+    popupInit();
     // Create a new global location parameters object
     locationRequest = LocationRequest.create();
 
@@ -165,8 +212,10 @@ public class MainActivity extends FragmentActivity implements LocationListener,
             query.include("user");
             query.orderByDescending("createdAt");
             query.whereWithinKilometers("location", geoPointFromLocation(myLoc), radius
-                * METERS_PER_FEET / METERS_PER_KILOMETER);
+                    / METERS_PER_KILOMETER);
+//            query.whereMatches(getTheSelected(clicked),"type");
             query.setLimit(MAX_POST_SEARCH_RESULTS);
+
             return query;
           }
         };
@@ -290,6 +339,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 
     // Get the latest search distance preference
     radius = Application.getSearchDistance();
+    clicked= Application.getClicked();
     // Checks the last saved location to show cached data if it's available
     if (lastLocation != null) {
       LatLng myLatLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -539,11 +589,11 @@ public class MainActivity extends FragmentActivity implements LocationListener,
           // Check for an existing marker for this post
           Marker oldMarker = mapMarkers.get(post.getObjectId());
           // Set up the map marker's location
-          MarkerOptions markerOpts =
+              MarkerOptions markerOpts =
               new MarkerOptions().position(new LatLng(post.getLocation().getLatitude(), post
                   .getLocation().getLongitude()));
           // Set up the marker properties based on if it is within the search radius
-          if (post.getLocation().distanceInKilometersTo(myPoint) > radius * METERS_PER_FEET
+          if (post.getLocation().distanceInKilometersTo(myPoint) > radius
               / METERS_PER_KILOMETER) {
             // Check for an existing out of range marker
             if (oldMarker != null) {
@@ -559,7 +609,8 @@ public class MainActivity extends FragmentActivity implements LocationListener,
             markerOpts =
                 markerOpts.title(getResources().getString(R.string.post_out_of_range)).icon(
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-          } else {
+          }
+          else {
             // Check for an existing in range marker
             if (oldMarker != null) {
               if (oldMarker.getSnippet() != null) {
@@ -571,10 +622,42 @@ public class MainActivity extends FragmentActivity implements LocationListener,
               }
             }
             // Display a green marker with the post information
-            markerOpts =
-                markerOpts.title(post.getText()).snippet(post.getUser().getString("additional_info"))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            if (post.getUser().getString("type").equals("Need Helper")) {
+                markerOpts =
+                        markerOpts.title(post.getUser().getUsername()).snippet(post.getUser().getString("additional_info"))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+            }
+            else {
+                markerOpts =
+                        markerOpts.title(post.getText()).snippet(post.getUser().getString("additional_info"))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }
           }
+//
+
+            //                       POPUP FOR CLICKING MARKERS
+            //
+//          mapFragment.getMap().setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//              @Override
+//              public boolean onMarkerClick(Marker marker) {
+//                  String username=marker.getTitle();
+//                  popupMessage.showAsDropDown(mapFragment.getView(),0,0);
+//                  popupText.setText(username);
+//                  return false;
+//              }
+//          });
+//
+//            mMap.setOnMarkerClickListener(new OnMarkerClickListener()
+//            {
+//
+//                @Override
+//                public boolean onMarkerClick(Marker arg0) {
+//                    if(arg0.getTitle().equals("MyHome")) // if marker source is clicked
+//                        Toast.makeText(MainActivity.this, arg0.getTitle(), Toast.LENGTH_SHORT).show();// display toast
+//                    return true;
+//                }
+//
+//            });
           // Add a new marker
           Marker marker = mapFragment.getMap().addMarker(markerOpts);
           mapMarkers.put(post.getObjectId(), marker);
@@ -617,7 +700,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     if (mapCircle == null) {
       mapCircle =
           mapFragment.getMap().addCircle(
-              new CircleOptions().center(myLatLng).radius(radius * METERS_PER_FEET));
+              new CircleOptions().center(myLatLng).radius(radius));
       int baseColor = Color.DKGRAY;
       mapCircle.setStrokeColor(baseColor);
       mapCircle.setStrokeWidth(2);
@@ -625,7 +708,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
           Color.blue(baseColor)));
     }
     mapCircle.setCenter(myLatLng);
-    mapCircle.setRadius(radius * METERS_PER_FEET); // Convert radius in feet to meters.
+    mapCircle.setRadius(radius); // Convert radius in feet to meters.
   }
 
   /*
@@ -645,7 +728,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
     // The return offset, initialized to the default difference
     double latLngOffset = OFFSET_CALCULATION_INIT_DIFF;
     // Set up the desired offset distance in meters
-    float desiredOffsetInMeters = radius * METERS_PER_FEET;
+    float desiredOffsetInMeters = radius;
     // Variables for the distance calculation
     float[] distance = new float[1];
     boolean foundMax = false;

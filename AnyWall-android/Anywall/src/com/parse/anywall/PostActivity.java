@@ -106,6 +106,7 @@ public class PostActivity extends Activity {
 //      testing.setSeconds(0);
     post.put("timeuploaded",date);
     post.put("reset",next);
+    post.put("Phone",post.getUser().getString("phone_number"));
     ParseACL acl = new ParseACL();
 
     // Give public read access

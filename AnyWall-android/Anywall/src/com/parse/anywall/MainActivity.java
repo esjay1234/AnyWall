@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.ViewGroup.LayoutParams;
 import android.app.Activity;
 import android.app.Dialog;
@@ -30,6 +32,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.Space;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,22 +66,41 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener {
 
-    LinearLayout layoutOfPopup;
-    PopupWindow popupMessage;
-    TextView popupText;
-    Button insidePopupButton;
-    public void init() {
-        popupText=new TextView(this);
-        layoutOfPopup= new LinearLayout(this);
-        insidePopupButton=new Button(this);
-        insidePopupButton.setText("OK");
-        layoutOfPopup.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        popupText.setPadding(0, 0, 0, 20);
-        layoutOfPopup.setOrientation(1);
-        layoutOfPopup.addView(popupText);
-        layoutOfPopup.addView(insidePopupButton);
-    }
+    ListView postsListView;
+    TextView empty;
 
+
+
+//    LayoutInflater inflater = (LayoutInflater)
+//            this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//    PopupWindow pw = new PopupWindow(
+//            inflater.inflate(R.layout.popup_example, null, false),
+//            100,
+//            100,
+//            true);
+//    // The code below assumes that the root container has an id called 'main'
+//    pw.showAtLocation(this.findViewById(R.id.main), Gravity.CENTER, 0, 0);
+
+    //    LinearLayout layoutOfPopup;
+//    PopupWindow popupMessage;
+//    TextView popupText;
+//    Button insidePopupButton;
+//    public void init() {
+//        popupText=new TextView(this);
+//        layoutOfPopup= new LinearLayout(this);
+//        insidePopupButton=new Button(this);
+//        insidePopupButton.setText("OK");
+//        layoutOfPopup.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//        popupText.setPadding(0, 0, 0, 20);
+//        layoutOfPopup.setOrientation(1);
+//        layoutOfPopup.addView(popupText);
+//        layoutOfPopup.addView(insidePopupButton);
+//    }
+//    public void popupInit() {
+//
+//        popupMessage = new PopupWindow(layoutOfPopup,LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+//        popupMessage.setContentView(layoutOfPopup);
+//    }
     public String getTheSelected(int i) {
         switch (i) {
             case 0:
@@ -94,11 +116,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         return "";
     }
 
-    public void popupInit() {
 
-        popupMessage = new PopupWindow(layoutOfPopup,LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
-        popupMessage.setContentView(layoutOfPopup);
-    }
 
     /*
      * Define a request code to send to Google Play services This code is returned in
@@ -187,8 +205,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         clicked = Application.getClicked();
         lastRadius = radius;
         setContentView(R.layout.activity_main);
-        init();
-        popupInit();
+        empty=(TextView) findViewById(R.id.textView2);
         // Create a new global location parameters object
         locationRequest = LocationRequest.create();
 
@@ -231,7 +248,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
                 }
                 TextView contentView = (TextView) view.findViewById(R.id.username_view);
                 TextView usernameView = (TextView) view.findViewById(R.id.content_view);
-                contentView.setText(post.getUser().getString("sex"));
+                contentView.setText(post.getUser().getString("phone_number"));
                 usernameView.setText(post.getUser().getUsername());
                 return view;
             }
@@ -244,7 +261,7 @@ public class MainActivity extends FragmentActivity implements LocationListener,
         postsQueryAdapter.setPaginationEnabled(false);
 
         // Attach the query adapter to the view
-        ListView postsListView = (ListView) findViewById(R.id.posts_listview);
+        postsListView = (ListView) findViewById(R.id.posts_listview);
         postsListView.setAdapter(postsQueryAdapter);
 
         // Set up the handler for an item's selection
@@ -641,27 +658,37 @@ public class MainActivity extends FragmentActivity implements LocationListener,
 
                     //                       POPUP FOR CLICKING MARKERS
                     //
+
 //          mapFragment.getMap().setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 //              @Override
 //              public boolean onMarkerClick(Marker marker) {
 //                  String username=marker.getTitle();
-//                  popupMessage.showAsDropDown(mapFragment.getView(),0,0);
-//                  popupText.setText(username);
+//
+//                  LayoutInflater layoutInflater
+//                          = (LayoutInflater)getBaseContext()
+//                          .getSystemService(LAYOUT_INFLATER_SERVICE);
+//                  View popupView = layoutInflater.inflate(R.layout.activity_popup, null);
+//                  final PopupWindow popupWindow = new PopupWindow(
+//                          popupView,
+//                          LayoutParams.WRAP_CONTENT,
+//                          LayoutParams.WRAP_CONTENT);
+//
+//                  Button dismiss=(Button) popupView.findViewById(R.id.exit_button);
+//                  dismiss.setOnClickListener(new Button.OnClickListener(){
+//
+//                      @Override
+//                      public void onClick(View v) {
+//                          // TODO Auto-generated method stub
+//                          popupWindow.dismiss();
+//                      }});
+//
+//                  popupWindow.showAsDropDown(empty,-120,0);
+//
 //                  return false;
 //              }
 //          });
-//
-//            mMap.setOnMarkerClickListener(new OnMarkerClickListener()
-//            {
-//
-//                @Override
-//                public boolean onMarkerClick(Marker arg0) {
-//                    if(arg0.getTitle().equals("MyHome")) // if marker source is clicked
-//                        Toast.makeText(MainActivity.this, arg0.getTitle(), Toast.LENGTH_SHORT).show();// display toast
-//                    return true;
-//                }
-//
-//            });
+
+
                     // Add a new marker
                     Marker marker = mapFragment.getMap().addMarker(markerOpts);
                     mapMarkers.put(post.getObjectId(), marker);
